@@ -1,0 +1,101 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #ddd;
+    font-family:'Courier New', Courier, monospace;
+}
+
+.container, .item {
+    outline: 0.5px solid black;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form{
+    margin-top: 1rem;
+    text-align: center;
+    line-height: 2.5rem;
+}
+
+form span{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input, button{
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    border: 0;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+}
+
+input{
+    outline: none;
+    padding: 0.5em 0 0.5em 0.8em ;
+}
+
+button{
+    padding: 0.5em 0.8em;
+    cursor: pointer;
+}
+
+button:hover, input:hover{
+    scale: 1.08;
+    box-shadow: 0 0 5px rgba(0 0 0 / 0.5);
+}
+
+button:active, input:active, form:has(input:active) span{
+    font-size: 1.1rem;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 2rem auto;
+    width: 50%;
+    gap: 1px;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+    box-shadow: 0 0 15px rgba(0 0 0 / 0.5);
+    outline : 1px solid #fff;
+    transition: all 0.5s ease;
+}
+
+.container .item {
+    cursor: pointer;
+    flex:0 0 calc(100% / var(--columns));
+    aspect-ratio: 1/1;
+    background-color: aliceblue;
+    margin: 0 -1px -1px 0;
+    transition: background-color 0.1s ease;
+}
+
+.container .item:not(.painted):hover{
+    outline: 2px solid #fff;
+    box-shadow: 0 0 5px 1px black;
+}
+
+.container .painted{
+    background-color: black; 
+}
+
+.container  .item.painted:hover{
+    outline: 1px dashed #fff;
+}   
+
+
+@media (max-width: 768px){
+    .container{
+        width: 90%;
+    }
+}
