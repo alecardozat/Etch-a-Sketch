@@ -39,6 +39,7 @@ button {
 input {
     outline: none;
     padding: 0.5em 0 0.5em 0.8em;
+    text-align: center;
 }
 
 button {
@@ -68,6 +69,7 @@ form:has(input:active) span {
     box-shadow: 0 0 15px 5px rgba(0 0 0 / 0.5);
     outline: 1px solid aliceblue;
     transition: all 0.5s ease;
+    touch-action: none;
 }
 
 .container .item {
@@ -83,5 +85,24 @@ form:has(input:active) span {
 @media (max-width: 768px) {
     .container {
         width: 90%;
+    }
+
+    form {
+        margin-top: 3rem;
+    }
+    
+    form h2{
+        margin: 2rem 0
+    }
+
+    form span {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    input,
+    button {
+        font-size: 1rem;
+        padding: 0.8em 1em;
     }
 }

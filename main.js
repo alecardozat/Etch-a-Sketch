@@ -4,6 +4,7 @@ const input = document.getElementById('input');
 const form = document.querySelector('form');
 const span = document.querySelector('span');
 let size = 16;
+let isPainting = false;
 let isErasing = false;
 
 input.addEventListener('click', () => {
@@ -13,30 +14,32 @@ input.addEventListener('click', () => {
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     size = input.value;
-    createGrid(size)
+    createGrid(size);
+    span.textContent = input.value;
 });
 
 
-window.addEventListener('keydown', (e)=>{
-    if(e.key === 'Shift') isErasing  = true;
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Shift') isErasing = true;
 });
 
-window.addEventListener('keyup', (e)=>{
-    if(e.key === 'Shift') isErasing = false;
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'Shift') isErasing = false;
 });
 
 const handlePaint = (e) => {
-    if (e.buttons === 1 && e.target.classList.contains('item')) {
-        const item = e.target;
-        let intensity = parseInt(item.dataset.intensity || 0);
-        if (isErasing) {
-            intensity = Math.max(0, intensity - 1);
-        } else {
-            intensity = Math.min(10, intensity + 1);
-        }
-        item.dataset.intensity = intensity;
-        updateColor(item, intensity);
+    const item = e.target;
+    if (!isPainting || !item.classList.contains('item')) return;
+
+    let intensity = parseInt(item.dataset.intensity || 0);
+
+    if (isErasing) {
+        intensity = Math.max(0, intensity - 1);
+    } else {
+        intensity = Math.min(10, intensity + 1);
     }
+    item.dataset.intensity = intensity;
+    updateColor(item, intensity);
 }
 
 function updateColor(item, level) {
@@ -62,11 +65,29 @@ function generateRandomColor() {
     return `#${hexColor}`;
 }
 
-['mouseover', 'mousedown'].forEach(e => {
-    container.addEventListener(e, handlePaint);
+container.addEventListener('dragstart', (e) => e.preventDefault());
+
+container.addEventListener('mousedown', () => isPainting = true);
+container.addEventListener('mouseup', () => isPainting = false);
+container.addEventListener('mouseleave', () => isPainting = false);
+container.addEventListener('mousemove', handlePaint);
+
+container.addEventListener('touchmove', handleTouch);
+container.addEventListener('touchend', () => isPainting = false);
+container.addEventListener('touchstart', (e) => {
+    isPainting = true;
+    handleTouch(e);
 });
 
-container.addEventListener('dragstart', (e) => e.preventDefault());
+function handleTouch(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element) handlePaint({ target: element });
+}
+
+
+
 
 function setDefaultGrid() {
     createGrid(size);
