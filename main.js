@@ -16,20 +16,53 @@ form.addEventListener('submit', (e) => {
     createGrid(size)
 });
 
+
+window.addEventListener('keydown', (e)=>{
+    if(e.key === 'Shift') isErasing  = true;
+});
+
+window.addEventListener('keyup', (e)=>{
+    if(e.key === 'Shift') isErasing = false;
+});
+
 const handlePaint = (e) => {
-    if(e.buttons === 1 && e.target.classList.contains('item')){
-        if(e.type === 'mousedown'){
-            isErasing = e.target.classList.contains('painted');
+    if (e.buttons === 1 && e.target.classList.contains('item')) {
+        const item = e.target;
+        let intensity = parseInt(item.dataset.intensity || 0);
+        if (isErasing) {
+            intensity = Math.max(0, intensity - 1);
+        } else {
+            intensity = Math.min(10, intensity + 1);
         }
-        if(isErasing){
-            e.target.classList.remove('painted');
-        }else{
-            e.target.classList.add('painted');
-        }
+        item.dataset.intensity = intensity;
+        updateColor(item, intensity);
     }
 }
 
-['mouseover','mousedown'].forEach(e =>{
+function updateColor(item, level) {
+    if (level === 0) {
+        item.style.backgroundColor = 'aliceblue';
+        return;
+    }
+
+    if (!item.dataset.hue) {
+        item.dataset.hue = Math.floor(Math.random() * 360);
+    }
+
+    const hue = item.dataset.hue;
+    const lightness = 100 - (level * 10);
+    item.style.backgroundColor = `hsl(${hue}, 70%, ${lightness}%)`;
+}
+
+function generateRandomColor() {
+    // FFFFFF hex = 16777215
+    const randomNumber = Math.floor(Math.random() * 16777215);
+    let hexColor = randomNumber.toString(16);
+    hexColor = hexColor.padStart(6, '0');
+    return `#${hexColor}`;
+}
+
+['mouseover', 'mousedown'].forEach(e => {
     container.addEventListener(e, handlePaint);
 });
 
@@ -45,7 +78,7 @@ function createGrid(size) {
     for (let i = 0; i < Math.pow(size, 2); i++) {
         const div = document.createElement('div');
         div.className = "item";
-        div.onclick = (div) => paintDiv(div);
+        div.dataset.intensity = 0;
         fragment.appendChild(div);
     }
     container.appendChild(fragment);
